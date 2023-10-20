@@ -1,5 +1,7 @@
 package com.yedy.gateway;
 
+import com.yedy.gateway.interceptor.GatewayRequestFilter;
+import com.yedy.gateway.interceptor.MyGatewayFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +29,11 @@ public class GatewayApplication {
 
 
 	@Bean
-	public RouteLocator myRoutes(RouteLocatorBuilder builder){
+	public RouteLocator myRoutes(RouteLocatorBuilder builder, MyGatewayFilter gatewayRequestFilter){
 		return builder.routes()
 				.route(p->p
 						.path("/user/**")
-						.filters(f->f.addRequestHeader("Authorization","Bearer yedy"))
+						.filters(f->f.filter(gatewayRequestFilter))
 						.uri("http://localhost:8081/"))
 				.build();
 	}
